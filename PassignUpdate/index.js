@@ -1,13 +1,31 @@
+const { MongoClient } = require('mongodb');
+const { ObjectID } = require('bson');
+const client = new MongoClient("mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false");
+
 module.exports = async function (context, req) {
-    context.log('JavaScript HTTP trigger function processed a request.');
-
-    const name = (req.query.name || (req.body && req.body.name));
-    const responseMessage = name
-        ? "Hello, " + name + ". This HTTP triggered function executed successfully."
-        : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
-
-    context.res = {
-        // status: 200, /* Defaults to 200 */
-        body: responseMessage
-    };
+    try {
+        const auth = req.headers.authorization;
+        const id = req.headers.id;
+        const passwords = req.body.passwords;
+        if (id.length != 24) {
+            throw id;
+        }
+        await client.connect();
+        const result = await client.db("Passign").collection("Passwords").findOne( { _id: ObjectID.createFromHexString(id) } );
+        if (result.authorization != auth){
+            throw auth;
+        }
+        result.passwords = passwords;
+        await client.db("Passign").collection("Passwords").findOneAndReplace( { _id: ObjectID.createFromHexString(id) } , result);
+        context.res = {
+            body: result.passwords,
+            status: 200
+        }
+    } catch (error) {
+        context.res = {
+            status:401
+        }
+    }finally {
+        client.close();
+    }
 }
