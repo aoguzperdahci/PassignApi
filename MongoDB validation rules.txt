@@ -1,0 +1,48 @@
+{
+  $jsonSchema: {
+    bsonType: 'object',
+    additionalItems: false,
+    additionalProperties: false,
+    required: [
+      '_id',
+      'authorization',
+      'passwords'
+    ],
+    properties: {
+      _id: {
+        bsonType: 'objectId'
+      },
+      authorization: {
+        bsonType: 'string',
+        minLength: 10
+      },
+      passwords: {
+        bsonType: 'array',
+        uniqueItems: true,
+        additionalProperties: false,
+        additionalItems: false,
+        items: {
+          additionalProperties: false,
+          additionalItems: false,
+          bsonType: 'object',
+          required: [
+            'website',
+            'username',
+            'password'
+          ],
+          properties: {
+            website: {
+              bsonType: 'string'
+            },
+            username: {
+              bsonType: 'string'
+            },
+            password: {
+              bsonType: 'string'
+            }
+          }
+        }
+      }
+    }
+  }
+}
