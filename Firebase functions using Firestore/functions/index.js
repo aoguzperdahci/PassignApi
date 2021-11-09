@@ -28,7 +28,7 @@ app.get("/", async (req, res) => {
       throw req;
     }
   } catch (error) {
-    res.status(403).send();
+    res.status(403).send(JSON.stringify(error));
   }
 });
 
@@ -46,8 +46,8 @@ app.put("/", async (req, res) => {
       throw req;
     }
   } catch (error) {
-    res.status(403).send();
+    res.status(403).send(JSON.stringify(error));
   }
 });
 
-exports.passign = functions.region("europe-west1").https.onRequest(app);
+exports.passign = functions.region("europe-west1").runWith({maxInstances: 1, memory: 128, timeoutSeconds: 30}).https.onRequest(app);
