@@ -50,4 +50,4 @@ app.put("/", async (req, res) => {
   }
 });
 
-exports.passign = functions.region("europe-west1").runWith({maxInstances: 1, memory: 128, timeoutSeconds: 30}).https.onRequest(app);
+exports.passign = functions.region("europe-west1").runWith({maxInstances: 1, memory: "256MB", timeoutSeconds: 30}).https.onRequest(app);
